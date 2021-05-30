@@ -1,7 +1,11 @@
+import 'package:cardio_ai_admin/model/patient_data_model.dart';
+import 'package:cardio_ai_admin/patientInfo/patient_list.dart';
 import 'package:cardio_ai_admin/patientRecord/patientfeed.dart';
 import 'package:cardio_ai_admin/shared/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +35,24 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
-
+int index=0;
 class _MyHomePageState extends State<MyHomePage> {
+  void getData() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int _index = (prefs.getInt('index') ?? 0);
+    setState(() {
+      index=_index;
+    });
+  }
+   initState() {
+     getData();
+    // TODO: implement initState
+    super.initState();
+
+  }
   @override
   Widget build(BuildContext context) {
+    getData();
     return Scaffold(
       backgroundColor: darkBg,
       appBar: AppBar(
@@ -43,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Column(
               children: [
@@ -65,7 +84,10 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: whitePopLarge(Colors.white),
                   ),
                 ),
-
+                StreamProvider<List<PatientDataModel>>.value(
+                    value: getpatientFeed,
+                    initialData: [],
+                    child: PatientInfoList(index)),
               ],
             ),
             Column(
@@ -73,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Patient info',
+                    'Doctor Panel',
                     style: whitePopLarge(Colors.white),
                   ),
                 ),
@@ -81,7 +103,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             )
           ],
-
         ),
       ),
     );

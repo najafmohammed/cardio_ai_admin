@@ -8,33 +8,34 @@ class PatientList extends StatefulWidget {
   @override
   _PatientListState createState() => _PatientListState();
 }
+final Query record = FirebaseFirestore.instance
+    .collection('Patient Record')
+    .orderBy('prediction', descending: true);
 
+List<PatientDataModel> patientDataSnapShot(QuerySnapshot snapshot) {
+  return snapshot.docs.map((doc) {
+    return PatientDataModel(
+      doc.get('patient name'),
+      doc.get('op number'),
+      doc.get('prediction'),
+      doc.get('entry'),
+    );
+  }).toList();
+}
+
+Stream<List<PatientDataModel>> get getpatientFeed {
+  return record.snapshots().map(patientDataSnapShot);
+}
 class _PatientListState extends State<PatientList> {
-  final Query record =
-      FirebaseFirestore.instance.collection('Patient Record').orderBy('prediction',descending: true);
 
-  List<PatientDataModel> _patientDataSnapShot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
-      return PatientDataModel(
-        doc.get('patient name'),
-        doc.get('op number'),
-        doc.get('prediction'),
-        doc.get('entry'),
-      );
-    }).toList();
-  }
-
-  Stream<List<PatientDataModel>> get patientFeed {
-    return record.snapshots().map(_patientDataSnapShot);
-  }
 
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<PatientDataModel>>.value(
-      value: patientFeed,
+      value: getpatientFeed,
       initialData: [],
       child: SizedBox(
-        width: MediaQuery.of(context).size.width/2,
+        width: MediaQuery.of(context).size.width / 3,
         child: Column(
           children: [
             PatientDataList(),

@@ -26,7 +26,7 @@ TextStyle whitePopLarge(Color color) {
 TextStyle whitePopSmall = new TextStyle(
   color: Colors.white,
   fontFamily: "Poppins",
-  fontSize: 13,
+  fontSize: 17,
   fontWeight: FontWeight.w400,
 );
 

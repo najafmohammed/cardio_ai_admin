@@ -18,7 +18,7 @@ class _PatientDataListState extends State<PatientDataList> {
       shrinkWrap: true,
       primary: false,
       itemBuilder: (context, index) {
-        return PatientTile(PatientRecord[index]);
+        return PatientTile(PatientRecord[index],index);
       },
     );
   }
