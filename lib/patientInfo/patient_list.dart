@@ -1,3 +1,4 @@
+
 import 'package:cardio_ai_admin/main.dart';
 import 'package:cardio_ai_admin/model/patient_data_model.dart';
 import 'package:cardio_ai_admin/shared/colors.dart';
@@ -11,8 +12,8 @@ class PatientInfoList extends StatefulWidget {
   @override
   _PatientInfoListState createState() => _PatientInfoListState();
 }
-
 class _PatientInfoListState extends State<PatientInfoList> {
+
   @override
   Widget build(BuildContext context) {
     final PatientRecord = Provider.of<List<PatientDataModel>>(context);
