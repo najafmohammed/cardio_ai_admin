@@ -33,16 +33,16 @@ class _PatientTileState extends State<PatientTile> {
           child: ListTile(
             title: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Patient Name :  "+widget.model.name,style: whitePopLarge(Colors.white),),
+              child: (widget.model.prediction!=0)?Text("Patient Name :  "+widget.model.name,style: whitePopLarge(Colors.white),):Text(widget.model.name,style: whitePopLarge(Colors.white),),
             ),
             leading: CircleAvatar(child: Icon(Icons.person),),
             subtitle: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("OP Number :  "+widget.model.opNumber.toString(),style: whitePopLarge(Colors.white),),
+              child: (widget.model.prediction!=0)?Text("OP Number :  "+widget.model.opNumber.toString(),style: whitePopLarge(Colors.white),):Text(""),
             ),
             trailing: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("Risk :  "+widget.model.prediction.toString(),style: whitePopLarge(Colors.white),),
+              child:(widget.model.prediction!=0)? Text("Risk :  "+widget.model.prediction.toString(),style: whitePopLarge(Colors.white),):Text(""),
             ),
           ),
         ),

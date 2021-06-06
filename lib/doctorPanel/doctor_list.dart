@@ -135,7 +135,6 @@ class _DoctorListState extends State<DoctorList> {
           SizedBox(
             height: MediaQuery.of(context).size.height / 1.24,
             child: Scrollbar(
-              isAlwaysShown: true,
               child: ListView.builder(
                 itemCount: docs.length,
                 shrinkWrap: true,
