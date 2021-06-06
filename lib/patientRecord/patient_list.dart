@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PatientDataList extends StatefulWidget {
-  const PatientDataList({Key? key, required this.sortCode}) : super(key: key);
+  const PatientDataList({Key? key, required this.sortCode, required this.query}) : super(key: key);
   final int sortCode;
+  final String query;
   @override
   _PatientDataListState createState() => _PatientDataListState();
 }
@@ -18,53 +19,72 @@ class _PatientDataListState extends State<PatientDataList> {
       case 00:
         {
           PatientRecord.sort((a, b) => a.prediction.compareTo(b.prediction));
+          if(widget.query!=""){
+            PatientRecord= PatientRecord.where((element) => element.name.toLowerCase().contains(widget.query.toLowerCase())).toList();
+          }
           break;
         }
       case 01:
         {
           PatientRecord.sort((b, a) => a.prediction.compareTo(b.prediction));
+          if(widget.query!=""){
+            PatientRecord= PatientRecord.where((element) => element.name.toLowerCase().contains(widget.query.toLowerCase())).toList();
+          }
           break;
         }
       case 10:
         {
           PatientRecord.sort((a, b) => a.name.compareTo(b.name));
+          if(widget.query!=""){
+            PatientRecord= PatientRecord.where((element) => element.name.toLowerCase().contains(widget.query.toLowerCase())).toList();
+          }
           break;
         }
       case 11:
         {
           PatientRecord.sort((b, a) => a.name.compareTo(b.name));
+          if(widget.query!=""){
+            PatientRecord= PatientRecord.where((element) => element.name.toLowerCase().contains(widget.query.toLowerCase())).toList();
+          }
           break;
         }
       case 20:
         {
           PatientRecord.sort((a, b) => a.opNumber.compareTo(b.opNumber));
+          if(widget.query!=""){
+            PatientRecord= PatientRecord.where((element) => element.opNumber.toString().toLowerCase().contains(widget.query.toLowerCase())).toList();
+          }
           break;
         }
       case 21:
         {
           PatientRecord.sort((b, a) => a.opNumber.compareTo(b.opNumber));
+          if(widget.query!=""){
+            PatientRecord= PatientRecord.where((element) => element.opNumber.toString().toLowerCase().contains(widget.query.toLowerCase())).toList();
+          }
           break;
         }
       default:
         {
           PatientRecord.sort((a, b) => a.prediction.compareTo(b.prediction));
+          if(widget.query!=""){
+            PatientRecord= PatientRecord.where((element) => element.name.toLowerCase().contains(widget.query.toLowerCase())).toList();
+          }
           break;
         }
     }
 
     return SizedBox(
-      height: MediaQuery.of(context).size.height / 1.24,
+      height: MediaQuery.of(context).size.height / 1.4,
       child: Scrollbar(
         isAlwaysShown: true,
-        child: Expanded(
-          child: ListView.builder(
-            itemCount: PatientRecord.length,
-            shrinkWrap: true,
-            primary: false,
-            itemBuilder: (context, index) {
-              return PatientTile(PatientRecord[index], index);
-            },
-          ),
+        child: ListView.builder(
+          itemCount: PatientRecord.length,
+          shrinkWrap: true,
+          primary: false,
+          itemBuilder: (context, index) {
+            return PatientTile(PatientRecord[index], index);
+          },
         ),
       ),
     );

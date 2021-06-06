@@ -37,6 +37,7 @@ class _PatientListState extends State<PatientList> {
   bool nameAsc = true;
   bool op = false;
   bool opAsc = true;
+  String query="";
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -65,7 +66,7 @@ class _PatientListState extends State<PatientList> {
                 backgroundColor: (risk) ? Colors.blueAccent : darkCard,
                 onPressed: () {
                   setState(() {
-                    if(risk)riskAsc=!riskAsc;
+                    if (risk) riskAsc = !riskAsc;
                     risk = true;
                     name = false;
                     op = false;
@@ -85,7 +86,7 @@ class _PatientListState extends State<PatientList> {
                 backgroundColor: (name) ? Colors.blueAccent : darkCard,
                 onPressed: () {
                   setState(() {
-                    if(name)nameAsc=!nameAsc;
+                    if (name) nameAsc = !nameAsc;
                     risk = false;
                     name = true;
                     op = false;
@@ -105,7 +106,7 @@ class _PatientListState extends State<PatientList> {
                 backgroundColor: (op) ? Colors.blueAccent : darkCard,
                 onPressed: () {
                   setState(() {
-                    if(op)opAsc=!opAsc;
+                    if (op) opAsc = !opAsc;
                     risk = false;
                     name = false;
                     op = true;
@@ -116,18 +117,70 @@ class _PatientListState extends State<PatientList> {
         SizedBox(
           height: 10,
         ),
+        SizedBox(
+          width: MediaQuery.of(context).size.width / 3,
+          child: TextField(
+            cursorColor: Colors.white,
+            onChanged: (val) {
+              setState(() {
+                query=val;
+              });
+              print(val);
+            },style: whitePopLarge(Colors.white),
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white, width: 2.0),
+              ),
+              labelText: 'Search',
+              labelStyle: whitePopLarge(Colors.white),
+              icon: Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10,
+        ),
         Column(
-
           children: [
             StreamProvider<List<PatientDataModel>>.value(
               value: getpatientFeedPrediction,
-
-              initialData: [PatientDataModel("null",1,2,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])],
+              initialData: [
+                PatientDataModel("null", 1, 2, [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0
+                ])
+              ],
               child: SizedBox(
                 width: MediaQuery.of(context).size.width / 3,
                 child: Column(
                   children: [
                     PatientDataList(
+                      query: query,
                       sortCode: (risk && riskAsc)
                           ? 00
                           : (risk && !riskAsc)

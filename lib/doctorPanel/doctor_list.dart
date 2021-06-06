@@ -136,17 +136,15 @@ class _DoctorListState extends State<DoctorList> {
             height: MediaQuery.of(context).size.height / 1.24,
             child: Scrollbar(
               isAlwaysShown: true,
-              child: Expanded(
-                child: ListView.builder(
-                  itemCount: docs.length,
-                  shrinkWrap: true,
-                  primary: false,
-                  itemBuilder: (context, index) {
-                    return DoctorTile(
-                      docs: docs[index],
-                    );
-                  },
-                ),
+              child: ListView.builder(
+                itemCount: docs.length,
+                shrinkWrap: true,
+                primary: false,
+                itemBuilder: (context, index) {
+                  return DoctorTile(
+                    docs: docs[index],
+                  );
+                },
               ),
             ),
           ),
