@@ -119,29 +119,28 @@ class _PatientListState extends State<PatientList> {
         Column(
 
           children: [
-            SingleChildScrollView(
-              child: StreamProvider<List<PatientDataModel>>.value(
-                value: getpatientFeedPrediction,
-                initialData: [],
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width / 3,
-                  child: Column(
-                    children: [
-                      PatientDataList(
-                        sortCode: (risk && riskAsc)
-                            ? 00
-                            : (risk && !riskAsc)
-                                ? 01
-                                : (name && nameAsc)
-                                    ? 10
-                                    : (name && !nameAsc)
-                                        ? 11
-                                        : (op && opAsc)
-                                            ? 20
-                                            : 21,
-                      ),
-                    ],
-                  ),
+            StreamProvider<List<PatientDataModel>>.value(
+              value: getpatientFeedPrediction,
+
+              initialData: [PatientDataModel("null",1,2,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])],
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width / 3,
+                child: Column(
+                  children: [
+                    PatientDataList(
+                      sortCode: (risk && riskAsc)
+                          ? 00
+                          : (risk && !riskAsc)
+                              ? 01
+                              : (name && nameAsc)
+                                  ? 10
+                                  : (name && !nameAsc)
+                                      ? 11
+                                      : (op && opAsc)
+                                          ? 20
+                                          : 21,
+                    ),
+                  ],
                 ),
               ),
             ),

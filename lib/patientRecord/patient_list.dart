@@ -52,13 +52,21 @@ class _PatientDataListState extends State<PatientDataList> {
         }
     }
 
-    return ListView.builder(
-      itemCount: PatientRecord.length,
-      shrinkWrap: true,
-      primary: false,
-      itemBuilder: (context, index) {
-        return PatientTile(PatientRecord[index], index);
-      },
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 1.24,
+      child: Scrollbar(
+        isAlwaysShown: true,
+        child: Expanded(
+          child: ListView.builder(
+            itemCount: PatientRecord.length,
+            shrinkWrap: true,
+            primary: false,
+            itemBuilder: (context, index) {
+              return PatientTile(PatientRecord[index], index);
+            },
+          ),
+        ),
+      ),
     );
   }
 }

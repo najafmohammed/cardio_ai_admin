@@ -28,6 +28,11 @@ class _DoctorListState extends State<DoctorList> {
       DoctorModel(rating: 3, name: "doc 2", specialization: "spec 2"),
       DoctorModel(rating: 5, name: "doc 3", specialization: "spec 3"),
       DoctorModel(rating: 3, name: "doc 4", specialization: "spec 4"),
+      DoctorModel(rating: 3, name: "doc 5", specialization: "spec 5"),
+      DoctorModel(rating: 2, name: "doc 6", specialization: "spec 6"),
+      DoctorModel(rating: 4, name: "doc 7", specialization: "spec 7"),
+      DoctorModel(rating: 3, name: "doc 8", specialization: "spec 8"),
+      DoctorModel(rating: 2, name: "doc 9", specialization: "spec 9"),
     ];
     if (rating == true && ratingAsc == true) {
       docs.sort((a, b) => a.rating.compareTo(b.rating));
@@ -127,15 +132,23 @@ class _DoctorListState extends State<DoctorList> {
           SizedBox(
             height: 10,
           ),
-          ListView.builder(
-            itemCount: docs.length,
-            shrinkWrap: true,
-            primary: false,
-            itemBuilder: (context, index) {
-              return DoctorTile(
-                docs: docs[index],
-              );
-            },
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 1.24,
+            child: Scrollbar(
+              isAlwaysShown: true,
+              child: Expanded(
+                child: ListView.builder(
+                  itemCount: docs.length,
+                  shrinkWrap: true,
+                  primary: false,
+                  itemBuilder: (context, index) {
+                    return DoctorTile(
+                      docs: docs[index],
+                    );
+                  },
+                ),
+              ),
+            ),
           ),
         ],
       ),
