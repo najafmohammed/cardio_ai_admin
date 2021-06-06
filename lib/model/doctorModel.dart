@@ -1,6 +1,7 @@
 class DoctorModel{
-  final int ratting;
+  final int rating;
   final String name;
+  final String specialization;
 
-  DoctorModel(this.ratting, this.name);
+  DoctorModel({required this.rating, required this.name, required this.specialization});
 }

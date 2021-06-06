@@ -2,6 +2,7 @@ import 'package:cardio_ai_admin/model/patient_data_model.dart';
 import 'package:cardio_ai_admin/patientRecord/patient_list.dart';
 import 'package:cardio_ai_admin/shared/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,17 +30,20 @@ Stream<List<PatientDataModel>> get getpatientFeedPrediction {
   return recordPrediction.snapshots().map(patientDataSnapShot);
 }
 
-
 class _PatientListState extends State<PatientList> {
   bool risk = true;
+  bool riskAsc = false;
   bool name = false;
+  bool nameAsc = true;
   bool op = false;
+  bool opAsc = true;
   @override
   Widget build(BuildContext context) {
-
     return Column(
       children: [
-        SizedBox(height: 10,),
+        SizedBox(
+          height: 10,
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -50,22 +54,29 @@ class _PatientListState extends State<PatientList> {
             ActionChip(
                 avatar: CircleAvatar(
                   backgroundColor: Colors.grey.shade800,
-                  child: Text('R'),
+                  child: (riskAsc)
+                      ? Icon(Icons.arrow_upward)
+                      : Icon(Icons.arrow_downward),
                 ),
-                label: Text('Risk', style: whitePopSmall,),
+                label: Text(
+                  'Risk',
+                  style: whitePopSmall,
+                ),
                 backgroundColor: (risk) ? Colors.blueAccent : darkCard,
                 onPressed: () {
                   setState(() {
-                    risk=true;
-                    name=false;
-                    op=false;
+                    if(risk)riskAsc=!riskAsc;
+                    risk = true;
+                    name = false;
+                    op = false;
                   });
-                  print("Chip 1 - Abhi");
                 }),
             ActionChip(
                 avatar: CircleAvatar(
                   backgroundColor: Colors.grey.shade800,
-                  child: Icon(Icons.arrow_upward),
+                  child: (nameAsc)
+                      ? Icon(Icons.arrow_upward)
+                      : Icon(Icons.arrow_downward),
                 ),
                 label: Text(
                   'Patient Name',
@@ -74,42 +85,67 @@ class _PatientListState extends State<PatientList> {
                 backgroundColor: (name) ? Colors.blueAccent : darkCard,
                 onPressed: () {
                   setState(() {
-                    risk=false;
-                    name=true;
-                    op=false;
+                    if(name)nameAsc=!nameAsc;
+                    risk = false;
+                    name = true;
+                    op = false;
                   });
-                  print("Chip 2 - Computer");
                 }),
             ActionChip(
                 avatar: CircleAvatar(
                   backgroundColor: Colors.grey.shade800,
-                  child: Text('O'),
+                  child: (opAsc)
+                      ? Icon(Icons.arrow_upward)
+                      : Icon(Icons.arrow_downward),
                 ),
-                label: Text('OP number', style: whitePopSmall,),
+                label: Text(
+                  'OP number',
+                  style: whitePopSmall,
+                ),
                 backgroundColor: (op) ? Colors.blueAccent : darkCard,
                 onPressed: () {
                   setState(() {
-                    risk=false;
-                    name=false;
-                    op=true;
+                    if(op)opAsc=!opAsc;
+                    risk = false;
+                    name = false;
+                    op = true;
                   });
                 }),
           ],
         ),
-        SizedBox(height: 10,),
-        SingleChildScrollView(
-          child: StreamProvider<List<PatientDataModel>>.value(
-            value:getpatientFeedPrediction,
-            initialData: [],
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width / 3,
-              child: Column(
-                children: [
-                  PatientDataList(sortCode: (risk)?0:(name)?1:2,),
-                ],
+        SizedBox(
+          height: 10,
+        ),
+        Column(
+
+          children: [
+            SingleChildScrollView(
+              child: StreamProvider<List<PatientDataModel>>.value(
+                value: getpatientFeedPrediction,
+                initialData: [],
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width / 3,
+                  child: Column(
+                    children: [
+                      PatientDataList(
+                        sortCode: (risk && riskAsc)
+                            ? 00
+                            : (risk && !riskAsc)
+                                ? 01
+                                : (name && nameAsc)
+                                    ? 10
+                                    : (name && !nameAsc)
+                                        ? 11
+                                        : (op && opAsc)
+                                            ? 20
+                                            : 21,
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ],
     );

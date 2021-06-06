@@ -15,19 +15,34 @@ class _PatientDataListState extends State<PatientDataList> {
   Widget build(BuildContext context) {
     var PatientRecord = Provider.of<List<PatientDataModel>>(context);
     switch (widget.sortCode) {
-      case 0:
+      case 00:
         {
           PatientRecord.sort((a, b) => a.prediction.compareTo(b.prediction));
           break;
         }
-      case 1:
+      case 01:
+        {
+          PatientRecord.sort((b, a) => a.prediction.compareTo(b.prediction));
+          break;
+        }
+      case 10:
         {
           PatientRecord.sort((a, b) => a.name.compareTo(b.name));
           break;
         }
-      case 2:
+      case 11:
+        {
+          PatientRecord.sort((b, a) => a.name.compareTo(b.name));
+          break;
+        }
+      case 20:
         {
           PatientRecord.sort((a, b) => a.opNumber.compareTo(b.opNumber));
+          break;
+        }
+      case 21:
+        {
+          PatientRecord.sort((b, a) => a.opNumber.compareTo(b.opNumber));
           break;
         }
       default:

@@ -1,3 +1,4 @@
+import 'package:cardio_ai_admin/doctorPanel/doctor_list.dart';
 import 'package:cardio_ai_admin/model/patient_data_model.dart';
 import 'package:cardio_ai_admin/patientInfo/patient_list.dart';
 import 'package:cardio_ai_admin/patientRecord/patientfeed.dart';
@@ -86,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 StreamProvider<List<PatientDataModel>>.value(
                     value: getpatientFeedPrediction,
-                    initialData: [],
+                    initialData: [PatientDataModel("null",1,2,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])],
                     child: PatientInfoList(index)),
               ],
             ),
@@ -99,7 +100,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: whitePopLarge(Colors.white),
                   ),
                 ),
-                PatientList()
+                DoctorList()
               ],
             )
           ],
