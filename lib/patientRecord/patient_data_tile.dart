@@ -38,7 +38,7 @@ class _PatientTileState extends State<PatientTile> {
             leading: CircleAvatar(child: Icon(Icons.person),),
             subtitle: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("OP Number :  "+widget.model.opNumber,style: whitePopLarge(Colors.white),),
+              child: Text("OP Number :  "+widget.model.opNumber.toString(),style: whitePopLarge(Colors.white),),
             ),
             trailing: Padding(
               padding: const EdgeInsets.all(8.0),

@@ -125,7 +125,7 @@ class _PatientInfoListState extends State<PatientInfoList> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data.name,
+                        "data.name",
                         style: whitePopSmall,
                       ),
                       Divider(),
@@ -135,7 +135,7 @@ class _PatientInfoListState extends State<PatientInfoList> {
                       ),
                       Divider(),
                       Text(
-                        data.opNumber,
+                        "data.opNumber",
                         style: whitePopSmall,
                       ),
                       Divider(),

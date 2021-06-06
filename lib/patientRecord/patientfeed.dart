@@ -15,7 +15,7 @@ final Query record = FirebaseFirestore.instance
 List<PatientDataModel> patientDataSnapShot(QuerySnapshot snapshot) {
   return snapshot.docs.map((doc) {
     return PatientDataModel(
-      doc.get('patient name'),
+      doc.get('name'),
       doc.get('op number'),
       doc.get('prediction'),
       doc.get('entry'),
