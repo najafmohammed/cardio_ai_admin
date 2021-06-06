@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 StreamProvider<List<PatientDataModel>>.value(
-                    value: getpatientFeed,
+                    value: getpatientFeedPrediction,
                     initialData: [],
                     child: PatientInfoList(index)),
               ],
