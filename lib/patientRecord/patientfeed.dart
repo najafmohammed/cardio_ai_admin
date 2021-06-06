@@ -45,7 +45,7 @@ class _PatientListState extends State<PatientList> {
           height: 10,
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               "Sort ",
