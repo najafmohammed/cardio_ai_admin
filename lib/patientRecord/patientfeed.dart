@@ -115,7 +115,7 @@ class _PatientListState extends State<PatientList> {
           ],
         ),
         SizedBox(
-          height: 10,
+          height: 20,
         ),
         SizedBox(
           width: MediaQuery.of(context).size.width / 3,

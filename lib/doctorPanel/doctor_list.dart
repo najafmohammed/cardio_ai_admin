@@ -17,8 +17,13 @@ bool name = false;
 bool nameAsc = true;
 bool spec = false;
 bool specAsc = true;
+String query="";
 
+List<DoctorModel> mod = [
+  DoctorModel(rating: 0,name: "Not found",specialization: ""),
+];
 class _DoctorListState extends State<DoctorList> {
+
   @override
   Widget build(BuildContext context) {
 
@@ -36,21 +41,69 @@ class _DoctorListState extends State<DoctorList> {
     ];
     if (rating == true && ratingAsc == true) {
       docs.sort((a, b) => a.rating.compareTo(b.rating));
+      if (query != "") {
+        docs = docs.where((element) => element.rating.toString()
+            .toLowerCase()
+            .contains(query.toLowerCase())).toList();
+      }
+      if (docs.isEmpty) {
+        docs =mod;
+      }
     }
     if (rating == true && ratingAsc == false) {
       docs.sort((b, a) => a.rating.compareTo(b.rating));
+      if (query != "") {
+        docs = docs.where((element) => element.rating.toString()
+            .toLowerCase()
+            .contains(query.toLowerCase())).toList();
+      }
+      if (docs.isEmpty) {
+        docs =mod;
+      }
     }
     if (name == true && nameAsc == true) {
       docs.sort((a, b) => a.name.compareTo(b.name));
+      if (query != "") {
+        docs = docs.where((element) => element.name
+            .toLowerCase()
+            .contains(query.toLowerCase())).toList();
+      }
+      if (docs.isEmpty) {
+        docs =mod;
+      }
     }
     if (name == true && nameAsc == false) {
       docs.sort((b, a) => a.name.compareTo(b.name));
+      if (query != "") {
+        docs = docs.where((element) => element.name
+            .toLowerCase()
+            .contains(query.toLowerCase())).toList();
+      }
+      if (docs.isEmpty) {
+        docs =mod;
+      }
     }
     if (spec == true && specAsc == true) {
       docs.sort((a, b) => a.specialization.compareTo(b.specialization));
+      if (query != "") {
+        docs = docs.where((element) => element.specialization
+            .toLowerCase()
+            .contains(query.toLowerCase())).toList();
+      }
+      if (docs.isEmpty) {
+        docs =mod;
+      }
     }
     if (spec == true && specAsc == true) {
       docs.sort((b, a) => a.specialization.compareTo(b.specialization));
+      if (query != "") {
+        docs = docs.where((element) => element.specialization
+            .toLowerCase()
+            .contains(query.toLowerCase())).toList();
+      }
+      if (docs.isEmpty) {
+        docs =mod;
+      }
     }
 
     return SizedBox(
@@ -130,10 +183,36 @@ class _DoctorListState extends State<DoctorList> {
             ],
           ),
           SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+            width: MediaQuery.of(context).size.width / 3,
+            child: TextField(
+              cursorColor: Colors.white,
+              onChanged: (val) {
+                setState(() {
+                  query=val;
+                });
+                print(val);
+              },style: whitePopLarge(Colors.white),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white, width: 2.0),
+                ),
+                labelText: 'Search',
+                labelStyle: whitePopLarge(Colors.white),
+                icon: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
             height: 10,
           ),
           SizedBox(
-            height: MediaQuery.of(context).size.height / 1.24,
+            height: MediaQuery.of(context).size.height / 1.4,
             child: Scrollbar(
               child: ListView.builder(
                 itemCount: docs.length,
