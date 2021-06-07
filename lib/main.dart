@@ -78,13 +78,6 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Patient info',
-                    style: whitePopLarge(Colors.white),
-                  ),
-                ),
                 StreamProvider<List<PatientDataModel>>.value(
                     value: getpatientFeedPrediction,
                     initialData: [PatientDataModel("null",1,2,[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])],

@@ -1,4 +1,3 @@
-
 import 'package:cardio_ai_admin/main.dart';
 import 'package:cardio_ai_admin/model/patient_data_model.dart';
 import 'package:cardio_ai_admin/shared/colors.dart';
@@ -12,8 +11,8 @@ class PatientInfoList extends StatefulWidget {
   @override
   _PatientInfoListState createState() => _PatientInfoListState();
 }
-class _PatientInfoListState extends State<PatientInfoList> {
 
+class _PatientInfoListState extends State<PatientInfoList> {
   @override
   Widget build(BuildContext context) {
     final PatientRecord = Provider.of<List<PatientDataModel>>(context);
@@ -24,10 +23,55 @@ class _PatientInfoListState extends State<PatientInfoList> {
           width: (MediaQuery.of(context).size.width / 3) - 30,
           child: Column(
             children: [
-              Icon(
-                Icons.person,
-                size: 80,
-                color: Colors.white,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Patient #" + data.opNumber.toString(),
+                      style: whitePopLarge(Colors.white),
+                    ),
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 105,
+                        backgroundColor: (data.prediction <= .40)
+                            ? Colors.green
+                            : (data.prediction > 40 && data.prediction <= .90)
+                                ? Colors.orange
+                                : Colors.red,
+                        child: CircleAvatar(
+                          child: Image(
+                            image: (data.entry[1] == 1)
+                                ? AssetImage("assets/male.png")
+                                : AssetImage("assets/female.png"),
+                          ),
+                          radius: 100.0,
+                        ),
+                      ),
+                      Text(
+                        data.name + " (" + data.entry[0].toString() + ")",
+                        style: whitePopSmall,
+                      ),
+                      SizedBox(height: 20,)
+                    ],
+                  ),
+                  Text(
+                    (data.prediction * 100).toString() + " %",
+                    style: whitePopLarge((data.prediction <= .40)
+                        ? Colors.green
+                        : (data.prediction > 40 && data.prediction <= .90)
+                            ? Colors.orange
+                            : Colors.red),
+                  ),
+                ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -37,31 +81,6 @@ class _PatientInfoListState extends State<PatientInfoList> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Name",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Age",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "OP Number",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Risk",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "gender",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
                       Text(
                         "Chest Pain",
                         style: whitePopSmall,
@@ -124,31 +143,6 @@ class _PatientInfoListState extends State<PatientInfoList> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        data.name,
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[0].toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.opNumber.toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.prediction.toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[1] == 0 ? "Female" : "Male",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
                       Text(
                         data.entry[2] == 0
                             ? "Typical Angina"
