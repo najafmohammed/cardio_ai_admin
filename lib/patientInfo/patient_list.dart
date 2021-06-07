@@ -1,8 +1,10 @@
 import 'package:cardio_ai_admin/main.dart';
+import 'package:cardio_ai_admin/model/infoGrid.dart';
 import 'package:cardio_ai_admin/model/patient_data_model.dart';
 import 'package:cardio_ai_admin/shared/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
 class PatientInfoList extends StatefulWidget {
@@ -17,6 +19,87 @@ class _PatientInfoListState extends State<PatientInfoList> {
   Widget build(BuildContext context) {
     final PatientRecord = Provider.of<List<PatientDataModel>>(context);
     PatientDataModel data = PatientRecord[index];
+    List<InfoGrid> gridData = [
+      InfoGrid(
+       row:1.2,
+        column: 2,
+        title: "Chest Pain",
+        value: data.entry[2] == 0
+            ? "Typical Angina"
+            : (data.entry[2] == 1)
+                ? "Atypical Angina"
+                : (data.entry[2] == 2)
+                    ? "Non-Anginal pain"
+                    : "Asymptomatic",
+      ),
+      InfoGrid(
+        row: 1.2,
+        column: 2,
+        title: "Blood Pressure",
+        value: data.entry[3].toString(),
+      ),
+      InfoGrid(
+       row:1.2,
+        column: 2,
+        title: "Cholesterol",
+        value: data.entry[4].toString(),
+      ),
+      InfoGrid(
+       row:1.2,
+        column: 4,
+        title: "Fasting Blood Sugar",
+        value: data.entry[5] == 0
+            ? "Higher than 120 mg/dl"
+            : "Lower than 120 mg/dl",
+      ),
+      InfoGrid(
+       row:1.2,
+        column: 2,
+        title: "Resting ECG",
+        value: data.entry[6].toString(),
+      ),
+      InfoGrid(
+       row:1.2,
+        column: 2,
+        title: "Max Heart Rate",
+        value: data.entry[7].toString(),
+      ),
+      InfoGrid(
+       row:1.2,
+        column: 4,
+        title: 'Exercise Induced Angina',
+        value: data.entry[8] == 0 ? "No" : "Yes",
+      ),
+      InfoGrid(
+       row:1.2,
+        column: 2,
+        title: "ST depression",
+        value: data.entry[9].toString(),
+      ),
+      InfoGrid(
+       row:1.2,
+        column: 4,
+        title: "Peak exercise ST",
+        value: data.entry[10] == 0
+            ? "Up Sloping"
+            : (data.entry[11] == 1)
+                ? "flat"
+                : "Down Sloping",
+      ),
+      InfoGrid(
+       row:1.2,
+        column: 4,
+        title: "Number of major vessels",
+        value: data.entry[11].toString(),
+      ),
+      InfoGrid(
+       row:1.2,
+        column: 2,
+        title: "Thal",
+        value: data.entry[12].toString(),
+      ),
+    ];
+
     return Card(
         color: darkCard,
         child: SizedBox(
@@ -41,7 +124,7 @@ class _PatientInfoListState extends State<PatientInfoList> {
                   Column(
                     children: [
                       CircleAvatar(
-                        radius: 105,
+                        radius: 65,
                         backgroundColor: (data.prediction <= .40)
                             ? Colors.green
                             : (data.prediction > 40 && data.prediction <= .90)
@@ -53,14 +136,16 @@ class _PatientInfoListState extends State<PatientInfoList> {
                                 ? AssetImage("assets/male.png")
                                 : AssetImage("assets/female.png"),
                           ),
-                          radius: 100.0,
+                          radius: 60.0,
                         ),
                       ),
                       Text(
                         data.name + " (" + data.entry[0].toString() + ")",
                         style: whitePopSmall,
                       ),
-                      SizedBox(height: 20,)
+                      SizedBox(
+                        height: 20,
+                      )
                     ],
                   ),
                   Text(
@@ -73,147 +158,32 @@ class _PatientInfoListState extends State<PatientInfoList> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Chest Pain",
-                        style: whitePopSmall,
+              SizedBox(
+                width: (MediaQuery.of(context).size.width / 3) - 50,
+                height: (MediaQuery.of(context).size.height / 1.6),
+                child: StaggeredGridView.countBuilder(
+                  crossAxisCount: 6,
+                  itemCount: gridData.length,
+                  itemBuilder: (BuildContext context, int index) =>  Card(
+                      color: Colors.purple.shade400,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            new Text(gridData[index].title.toString(),style: whitePopSmall,),
+                            Divider(color: Colors.purple.shade400,),
+                            new Text(gridData[index].value.toString(),style: whitePopSmall.copyWith(color: Colors.white70),),
+                          ],
+                        ),
                       ),
-                      Divider(),
-                      Text(
-                        "Blood Pressure",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Cholesterol",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Fasting Blood Sugar",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Resting ECG",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Max Heart Rate",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Exercise Induced Angina",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "ST depression",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Peak exercise ST",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Number of major vessels",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        "Thal",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                    ],
-                  ),
-                  Container(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        data.entry[2] == 0
-                            ? "Typical Angina"
-                            : (data.entry[2] == 1)
-                                ? "Atypical Angina"
-                                : (data.entry[2] == 2)
-                                    ? "Non-Anginal pain"
-                                    : "Asymptomatic",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[3].toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[4].toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[5] == 0
-                            ? "Higher than 120 mg/dl"
-                            : "Lower than 120 mg/dl",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[6].toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[7].toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[8] == 0 ? "No" : "Yes",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[9].toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[10] == 0
-                            ? "Up Sloping"
-                            : (data.entry[11] == 1)
-                                ? "flat"
-                                : "Down Sloping",
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[11].toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                      Text(
-                        data.entry[12].toString(),
-                        style: whitePopSmall,
-                      ),
-                      Divider(),
-                    ],
-                  ),
-                ],
-              )
+                    ),
+
+                  staggeredTileBuilder: (int index) => new StaggeredTile.count(
+                      gridData[index].column, gridData[index].row.toDouble()),
+                  mainAxisSpacing: 4.0,
+                  crossAxisSpacing: 4.0,
+                ),
+              ),
             ],
           ),
         ));
