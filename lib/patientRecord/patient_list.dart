@@ -13,24 +13,26 @@ class PatientDataList extends StatefulWidget {
 }
 
 List<PatientDataModel> mod = [
-  PatientDataModel("None found", 0, 0, [0]),
+  PatientDataModel("None found", 0, 0, [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]),
 ];
 
 class _PatientDataListState extends State<PatientDataList> {
   @override
   Widget build(BuildContext context) {
+    print(widget.sortCode);
     var PatientRecord = Provider.of<List<PatientDataModel>>(context);
     switch (widget.sortCode) {
       case 00:
         {
           PatientRecord.sort((a, b) => a.prediction.compareTo(b.prediction));
           if (widget.query != "") {
-            PatientRecord = PatientRecord.where((element) => element.name
-                .toLowerCase()
-                .contains(widget.query.toLowerCase())).toList();
+            PatientRecord = PatientRecord.where((element) =>
+                element.name
+                    .toLowerCase()
+                    .contains(widget.query.toLowerCase())).toList();
           }
           if (PatientRecord.isEmpty) {
-            PatientRecord =mod;
+            PatientRecord = mod;
           }
           break;
         }
@@ -38,12 +40,13 @@ class _PatientDataListState extends State<PatientDataList> {
         {
           PatientRecord.sort((b, a) => a.prediction.compareTo(b.prediction));
           if (widget.query != "") {
-            PatientRecord = PatientRecord.where((element) => element.name
-                .toLowerCase()
-                .contains(widget.query.toLowerCase())).toList();
+            PatientRecord = PatientRecord.where((element) =>
+                element.name
+                    .toLowerCase()
+                    .contains(widget.query.toLowerCase())).toList();
           }
           if (PatientRecord.isEmpty) {
-            PatientRecord =mod;
+            PatientRecord = mod;
           }
           break;
         }
@@ -51,13 +54,14 @@ class _PatientDataListState extends State<PatientDataList> {
         {
           PatientRecord.sort((a, b) => a.name.compareTo(b.name));
           if (widget.query != "") {
-            PatientRecord = PatientRecord.where((element) => element.name
-                .toLowerCase()
-                .contains(widget.query.toLowerCase())).toList();
+            PatientRecord = PatientRecord.where((element) =>
+                element.name
+                    .toLowerCase()
+                    .contains(widget.query.toLowerCase())).toList();
           }
           if (PatientRecord.isEmpty) {
             print("yes");
-            PatientRecord =mod;
+            PatientRecord = mod;
           }
           break;
         }
@@ -65,13 +69,14 @@ class _PatientDataListState extends State<PatientDataList> {
         {
           PatientRecord.sort((b, a) => a.name.compareTo(b.name));
           if (widget.query != "") {
-            PatientRecord = PatientRecord.where((element) => element.name
-                .toLowerCase()
-                .contains(widget.query.toLowerCase())).toList();
+            PatientRecord = PatientRecord.where((element) =>
+                element.name
+                    .toLowerCase()
+                    .contains(widget.query.toLowerCase())).toList();
           }
           if (PatientRecord.isEmpty) {
             print("yes");
-            PatientRecord =mod;
+            PatientRecord = mod;
           }
           break;
         }
@@ -79,14 +84,15 @@ class _PatientDataListState extends State<PatientDataList> {
         {
           PatientRecord.sort((a, b) => a.opNumber.compareTo(b.opNumber));
           if (widget.query != "") {
-            PatientRecord = PatientRecord.where((element) => element.opNumber
-                .toString()
-                .toLowerCase()
-                .contains(widget.query.toLowerCase())).toList();
+            PatientRecord = PatientRecord.where((element) =>
+                element.opNumber
+                    .toString()
+                    .toLowerCase()
+                    .contains(widget.query.toLowerCase())).toList();
           }
           if (PatientRecord.isEmpty) {
             print("yes");
-            PatientRecord =mod;
+            PatientRecord = mod;
           }
           break;
         }
@@ -94,27 +100,20 @@ class _PatientDataListState extends State<PatientDataList> {
         {
           PatientRecord.sort((b, a) => a.opNumber.compareTo(b.opNumber));
           if (widget.query != "") {
-            PatientRecord = PatientRecord.where((element) => element.opNumber
-                .toString()
-                .toLowerCase()
-                .contains(widget.query.toLowerCase())).toList();
+            PatientRecord = PatientRecord.where((element) =>
+                element.opNumber
+                    .toString()
+                    .toLowerCase()
+                    .contains(widget.query.toLowerCase())).toList();
           }
           if (PatientRecord.isEmpty) {
-            PatientRecord =mod;
+            PatientRecord = mod;
           }
           break;
         }
       default:
         {
-          PatientRecord.sort((a, b) => a.prediction.compareTo(b.prediction));
-          if (widget.query != "") {
-            PatientRecord = PatientRecord.where((element) => element.name
-                .toLowerCase()
-                .contains(widget.query.toLowerCase())).toList();
-            if (PatientRecord.isEmpty) {
-              PatientRecord = mod;
-            }
-          }
+          PatientRecord = mod;
           break;
         }
     }
