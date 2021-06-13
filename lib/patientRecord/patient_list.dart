@@ -84,7 +84,10 @@ class _PatientDataListState extends State<PatientDataList> {
                 .toLowerCase()
                 .contains(widget.query.toLowerCase())).toList();
           }
-          PatientRecord = mod;
+          if (PatientRecord.isEmpty) {
+            print("yes");
+            PatientRecord =mod;
+          }
           break;
         }
       case 21:

@@ -19,9 +19,12 @@ class _PatientInfoListState extends State<PatientInfoList> {
   Widget build(BuildContext context) {
     final PatientRecord = Provider.of<List<PatientDataModel>>(context);
     PatientDataModel data = PatientRecord[index];
+    PatientRecord.forEach((element) {
+      print(element.name);
+    });
     List<InfoGrid> gridData = [
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 2,
         title: "Chest Pain",
         value: data.entry[2] == 0
@@ -39,13 +42,13 @@ class _PatientInfoListState extends State<PatientInfoList> {
         value: data.entry[3].toString(),
       ),
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 2,
         title: "Cholesterol",
         value: data.entry[4].toString(),
       ),
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 4,
         title: "Fasting Blood Sugar",
         value: data.entry[5] == 0
@@ -53,31 +56,31 @@ class _PatientInfoListState extends State<PatientInfoList> {
             : "Lower than 120 mg/dl",
       ),
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 2,
         title: "Resting ECG",
         value: data.entry[6].toString(),
       ),
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 2,
         title: "Max Heart Rate",
         value: data.entry[7].toString(),
       ),
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 4,
         title: 'Exercise Induced Angina',
         value: data.entry[8] == 0 ? "No" : "Yes",
       ),
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 2,
         title: "ST depression",
         value: data.entry[9].toString(),
       ),
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 4,
         title: "Peak exercise ST",
         value: data.entry[10] == 0
@@ -87,13 +90,13 @@ class _PatientInfoListState extends State<PatientInfoList> {
                 : "Down Sloping",
       ),
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 4,
         title: "Number of major vessels",
         value: data.entry[11].toString(),
       ),
       InfoGrid(
-       row:1.2,
+        row: 1.2,
         column: 2,
         title: "Thal",
         value: data.entry[12].toString(),
@@ -164,20 +167,28 @@ class _PatientInfoListState extends State<PatientInfoList> {
                 child: StaggeredGridView.countBuilder(
                   crossAxisCount: 6,
                   itemCount: gridData.length,
-                  itemBuilder: (BuildContext context, int index) =>  Card(
-                      color: Colors.purple.shade400,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            new Text(gridData[index].title.toString(),style: whitePopSmall,),
-                            Divider(color: Colors.purple.shade400,),
-                            new Text(gridData[index].value.toString(),style: whitePopSmall.copyWith(color: Colors.white70),),
-                          ],
-                        ),
+                  itemBuilder: (BuildContext context, int index) => Card(
+                    color: Colors.purple.shade400,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          new Text(
+                            gridData[index].title.toString(),
+                            style: whitePopSmall,
+                          ),
+                          Divider(
+                            color: Colors.purple.shade400,
+                          ),
+                          new Text(
+                            gridData[index].value.toString(),
+                            style:
+                                whitePopSmall.copyWith(color: Colors.white70),
+                          ),
+                        ],
                       ),
                     ),
-
+                  ),
                   staggeredTileBuilder: (int index) => new StaggeredTile.count(
                       gridData[index].column, gridData[index].row.toDouble()),
                   mainAxisSpacing: 4.0,
