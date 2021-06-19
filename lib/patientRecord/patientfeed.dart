@@ -21,6 +21,7 @@ List<PatientDataModel> patientDataSnapShot(QuerySnapshot snapshot) {
       doc.get('name'),
       doc.get('op number'),
       doc.get('prediction'),
+      doc.id,
       doc.get('entry'),
     );
   }).toList();
@@ -38,6 +39,7 @@ class _PatientListState extends State<PatientList> {
   bool op = false;
   bool opAsc = true;
   String query="";
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -148,7 +150,7 @@ class _PatientListState extends State<PatientList> {
             StreamProvider<List<PatientDataModel>>.value(
               value: getpatientFeedPrediction,
               initialData: [
-                PatientDataModel("null", 1, 2, [
+                PatientDataModel("null", 1, 2,"VznTJKBUPsfS2G3gBVIfskmcea02",[
                   0,
                   0,
                   0,

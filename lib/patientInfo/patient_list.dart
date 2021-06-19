@@ -2,6 +2,7 @@ import 'package:cardio_ai_admin/main.dart';
 import 'package:cardio_ai_admin/model/infoGrid.dart';
 import 'package:cardio_ai_admin/model/patient_data_model.dart';
 import 'package:cardio_ai_admin/shared/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -15,12 +16,18 @@ class PatientInfoList extends StatefulWidget {
 }
 
 class _PatientInfoListState extends State<PatientInfoList> {
+  String msg = "";
+  String hint = "";
+  bool visible = false;
+  String suffixText = "";
+  Color _textColorIndicator = Colors.grey;
+  TextEditingController _controller = new TextEditingController();
   @override
   Widget build(BuildContext context) {
     final PatientRecord = Provider.of<List<PatientDataModel>>(context);
     PatientDataModel data = PatientRecord[index];
     PatientRecord.forEach((element) {
-      print(element.name);
+      // print(element.name);
     });
     List<InfoGrid> gridData = [
       InfoGrid(
@@ -124,32 +131,25 @@ class _PatientInfoListState extends State<PatientInfoList> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 65,
-                        backgroundColor: (data.prediction <= .40)
-                            ? Colors.green
-                            : (data.prediction > 40 && data.prediction <= .90)
-                                ? Colors.orange
-                                : Colors.red,
-                        child: CircleAvatar(
-                          child: Image(
-                            image: (data.entry[1] == 1)
-                                ? AssetImage("assets/male.png")
-                                : AssetImage("assets/female.png"),
-                          ),
-                          radius: 60.0,
-                        ),
+                  CircleAvatar(
+                    radius: 55,
+                    backgroundColor: (data.prediction <= .40)
+                        ? Colors.green
+                        : (data.prediction > 40 && data.prediction <= .90)
+                            ? Colors.orange
+                            : Colors.red,
+                    child: CircleAvatar(
+                      child: Image(
+                        image: (data.entry[1] == 1)
+                            ? AssetImage("assets/male.png")
+                            : AssetImage("assets/female.png"),
                       ),
-                      Text(
-                        data.name + " (" + data.entry[0].toString() + ")",
-                        style: whitePopSmall,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      )
-                    ],
+                      radius: 50.0,
+                    ),
+                  ),
+                  Text(
+                    data.name + " (" + data.entry[0].toString() + ")",
+                    style: whitePopSmall,
                   ),
                   Text(
                     (data.prediction * 100).toString() + " %",
@@ -161,32 +161,119 @@ class _PatientInfoListState extends State<PatientInfoList> {
                   ),
                 ],
               ),
+              Card(
+                color: darkCard,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    new Container(
+                      height: 75,
+                      width: 340,
+                      child: new TextFormField(
+                        controller: _controller,
+                        onChanged: (val) {
+                          setState(() => msg = val);
+                        },
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: "Poppins",
+                          fontWeight: FontWeight.w500,
+                        ),
+                        decoration: new InputDecoration(
+                          suffixText: suffixText,
+                          suffixIcon: AnimatedOpacity(
+                            opacity: visible ? 1.0 : 0.0,
+                            duration: Duration(milliseconds: 1000),
+                            // The green box must be a child of the AnimatedOpacity widget.
+                            child: Icon(
+                              (msg == "") ? Icons.circle : Icons.check_circle,
+                              color: (msg == "")
+                                  ? Colors.red
+                                  : _textColorIndicator,
+                            ),
+                          ),
+                          hintText: (hint == "")
+                              ? 'Enter message for Reminder'
+                              : hint,
+                          hintStyle: TextStyle(
+                              color: (hint == "") ? Colors.grey : Colors.red),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white),
+                          ),
+                          labelText: 'Message',
+                          labelStyle:
+                              new TextStyle(color: Colors.white, fontSize: 17),
+                        ),
+                        cursorColor: Colors.white,
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        setState(() {});
+                        if (msg == "") {
+                          setState(() {
+                            hint = "Write something ";
+                            _textColorIndicator = Colors.red;
+                          });
+                        } else {
+                          visible = !visible;
+                          setState(() {
+                            suffixText = "message sent";
+                          });
+                          print("sending msg:" + msg);
+                          _textColorIndicator = Colors.green;
+                          final CollectionReference record = FirebaseFirestore
+                              .instance
+                              .collection('Patient Record');
+                          await record
+                              .doc(data.uid)
+                              .collection("Reminders")
+                              .add({
+                            "msg": msg,
+                          }).then((value) {
+                            setState(() {
+                              visible = !visible;
+                              msg = "";
+                              suffixText = "";
+                              _controller.clear();
+                            });
+                          });
+                        }
+                      },
+                      icon: Icon(Icons.arrow_forward_ios),
+                      label: Text(
+                        "",
+                        style: whitePopSmall,
+                      ),
+                    )
+                  ],
+                ),
+              ),
               SizedBox(
-                width: (MediaQuery.of(context).size.width / 3) - 50,
-                height: (MediaQuery.of(context).size.height / 1.6),
+                width: (MediaQuery.of(context).size.width / 3) - 90,
+                height: (MediaQuery.of(context).size.height / 1.65),
                 child: StaggeredGridView.countBuilder(
                   crossAxisCount: 6,
                   itemCount: gridData.length,
                   itemBuilder: (BuildContext context, int index) => Card(
                     color: Colors.purple.shade400,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          new Text(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: new Text(
                             gridData[index].title.toString(),
                             style: whitePopSmall,
                           ),
-                          Divider(
-                            color: Colors.purple.shade400,
-                          ),
-                          new Text(
-                            gridData[index].value.toString(),
-                            style:
-                                whitePopSmall.copyWith(color: Colors.white70),
-                          ),
-                        ],
-                      ),
+                        ),
+                        Divider(
+                          color: Colors.purple.shade400,
+                        ),
+                        new Text(
+                          gridData[index].value.toString(),
+                          style: whitePopSmall.copyWith(color: Colors.white70),
+                        ),
+                      ],
                     ),
                   ),
                   staggeredTileBuilder: (int index) => new StaggeredTile.count(
