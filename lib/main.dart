@@ -51,6 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
 
   }
+  bool _globalMessage=false;
   @override
   Widget build(BuildContext context) {
     getData();
@@ -58,6 +59,20 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: darkBg,
       appBar: AppBar(
         centerTitle: true,
+        actions: [
+          ElevatedButton.icon(
+            onPressed: () {
+              setState(() {
+              _globalMessage=!_globalMessage;
+              });
+            },
+            icon: Icon(Icons.autorenew),
+            label: Text(
+              (_globalMessage)?"Global message":"User message",
+              style: whitePopSmall,
+            ),
+          ),
+        ],
         title: Text(widget.title),
       ),
       body: Center(

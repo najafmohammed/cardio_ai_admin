@@ -1,6 +1,8 @@
 import 'package:cardio_ai_admin/main.dart';
 import 'package:cardio_ai_admin/model/infoGrid.dart';
 import 'package:cardio_ai_admin/model/patient_data_model.dart';
+import 'package:cardio_ai_admin/model/reminderModel.dart';
+import 'package:cardio_ai_admin/patientInfo/reminders/reminderList.dart';
 import 'package:cardio_ai_admin/shared/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,7 +23,15 @@ class _PatientInfoListState extends State<PatientInfoList> {
   bool visible = false;
   String suffixText = "";
   Color _textColorIndicator = Colors.grey;
+  bool _reminderVisibility = false;
   TextEditingController _controller = new TextEditingController();
+
+  List<reminderModel> reminderData=[];
+
+  CollectionReference recordPredictionReminder =
+  FirebaseFirestore.instance.collection('Patient Record');
+
+
   @override
   Widget build(BuildContext context) {
     final PatientRecord = Provider.of<List<PatientDataModel>>(context);
@@ -29,6 +39,7 @@ class _PatientInfoListState extends State<PatientInfoList> {
     PatientRecord.forEach((element) {
       // print(element.name);
     });
+
     List<InfoGrid> gridData = [
       InfoGrid(
         row: 1.2,
@@ -125,7 +136,7 @@ class _PatientInfoListState extends State<PatientInfoList> {
                       "Patient #" + data.opNumber.toString(),
                       style: whitePopLarge(Colors.white),
                     ),
-                  )
+                  ),
                 ],
               ),
               Row(
@@ -245,43 +256,69 @@ class _PatientInfoListState extends State<PatientInfoList> {
                         "",
                         style: whitePopSmall,
                       ),
-                    )
+                    ),
+                    ElevatedButton.icon(
+                        onPressed: () async{
+                            var b=await recordPredictionReminder
+                                .doc(data.uid)
+                                .collection("Reminders")
+                                .get();
+                            setState((){
+                            reminderData=b.docs.map((doc){
+                              return reminderModel(text: doc.get("msg"), uid: doc.id);
+                            }).toList();
+
+                            _reminderVisibility = !_reminderVisibility;
+                          });
+                        },
+                        icon: (_reminderVisibility)
+                            ? Icon(Icons.visibility)
+                            : Icon(Icons.visibility_off),
+                        label: Text("")),
                   ],
                 ),
               ),
-              SizedBox(
-                width: (MediaQuery.of(context).size.width / 3) - 90,
-                height: (MediaQuery.of(context).size.height / 1.65),
-                child: StaggeredGridView.countBuilder(
-                  crossAxisCount: 6,
-                  itemCount: gridData.length,
-                  itemBuilder: (BuildContext context, int index) => Card(
-                    color: Colors.purple.shade400,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: new Text(
-                            gridData[index].title.toString(),
-                            style: whitePopSmall,
+              (!_reminderVisibility)
+                  ? SizedBox(
+                      width: (MediaQuery.of(context).size.width / 3) - 90,
+                      height: (MediaQuery.of(context).size.height / 1.65),
+                      child: StaggeredGridView.countBuilder(
+                        crossAxisCount: 6,
+                        itemCount: gridData.length,
+                        itemBuilder: (BuildContext context, int index) => Card(
+                          color: Colors.purple.shade400,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: new Text(
+                                  gridData[index].title.toString(),
+                                  style: whitePopSmall,
+                                ),
+                              ),
+                              Divider(
+                                color: Colors.purple.shade400,
+                              ),
+                              new Text(
+                                gridData[index].value.toString(),
+                                style: whitePopSmall.copyWith(
+                                    color: Colors.white70),
+                              ),
+                            ],
                           ),
                         ),
-                        Divider(
-                          color: Colors.purple.shade400,
-                        ),
-                        new Text(
-                          gridData[index].value.toString(),
-                          style: whitePopSmall.copyWith(color: Colors.white70),
-                        ),
-                      ],
-                    ),
-                  ),
-                  staggeredTileBuilder: (int index) => new StaggeredTile.count(
-                      gridData[index].column, gridData[index].row.toDouble()),
-                  mainAxisSpacing: 4.0,
-                  crossAxisSpacing: 4.0,
-                ),
-              ),
+                        staggeredTileBuilder: (int index) =>
+                            new StaggeredTile.count(gridData[index].column,
+                                gridData[index].row.toDouble()),
+                        mainAxisSpacing: 4.0,
+                        crossAxisSpacing: 4.0,
+                      ),
+                    )
+                  : SizedBox(
+                      width: (MediaQuery.of(context).size.width / 3) - 90,
+                      height: (MediaQuery.of(context).size.height / 1.65),
+                      child: ReminderList(reminders: reminderData,)
+                    )
             ],
           ),
         ));
