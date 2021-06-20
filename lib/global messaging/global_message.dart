@@ -22,17 +22,35 @@ bool _reminderVisibility = false;
 
 List<GlobalMessagingModel> _globalMessages = [];
 
-CollectionReference recordPredictionReminder =
-    FirebaseFirestore.instance.collection('Patient Record');
+CollectionReference globalMessageCollection =
+    FirebaseFirestore.instance.collection('Global');
 
-bool news=false;
-bool tips=false;
-bool test=false;
-int newsCount=0;
-int tipsCount=0;
-int testConunt=0;
+bool news = false;
+bool tips = false;
+bool test = false;
+int newsCount = 0;
+int tipsCount = 0;
+int testCount = 0;
 
 class _GlobalMessageState extends State<GlobalMessage> {
+  void GetData() async {
+    await globalMessageCollection
+        .doc("Messaging")
+        .collection("Test")
+        .get()
+        .then((value) {
+          print("hello");
+print(value.size);
+      setState(() {
+        newsCount = value.docs.length;
+      });
+    });
+  }
+
+  initState() {
+    GetData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,12 +58,12 @@ class _GlobalMessageState extends State<GlobalMessage> {
       children: [
         Center(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-          "Global Messaging",
-          style: whitePopLarge(Colors.white),
-        ),
-            )),
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "Global Messaging",
+            style: whitePopLarge(Colors.white),
+          ),
+        )),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -55,9 +73,11 @@ class _GlobalMessageState extends State<GlobalMessage> {
             ),
             ActionChip(
                 avatar: CircleAvatar(
-                  backgroundColor: Colors.grey.shade800,
-                  child: Text(newsCount.toString(),style: whitePopSmall,)
-                ),
+                    backgroundColor: Colors.grey.shade800,
+                    child: Text(
+                      newsCount.toString(),
+                      style: whitePopSmall,
+                    )),
                 label: Text(
                   'News',
                   style: whitePopSmall,
@@ -73,8 +93,10 @@ class _GlobalMessageState extends State<GlobalMessage> {
             ActionChip(
                 avatar: CircleAvatar(
                     backgroundColor: Colors.grey.shade800,
-                    child: Text(newsCount.toString(),style: whitePopSmall,)
-                ),
+                    child: Text(
+                      tipsCount.toString(),
+                      style: whitePopSmall,
+                    )),
                 label: Text(
                   'Tips',
                   style: whitePopSmall,
@@ -90,8 +112,10 @@ class _GlobalMessageState extends State<GlobalMessage> {
             ActionChip(
                 avatar: CircleAvatar(
                     backgroundColor: Colors.grey.shade800,
-                    child: Text(newsCount.toString(),style: whitePopSmall,)
-                ),
+                    child: Text(
+                      testCount.toString(),
+                      style: whitePopSmall,
+                    )),
                 label: Text(
                   'Tests ',
                   style: whitePopSmall,
@@ -186,14 +210,14 @@ class _GlobalMessageState extends State<GlobalMessage> {
               ),
               ElevatedButton.icon(
                   onPressed: () async {
-                    var b = await recordPredictionReminder
-                        .doc(widget.patientUid)
-                        .collection("Reminders")
+                    var b = await globalMessageCollection
+                        .doc("Messaging")
+                        .collection("Test")
                         .get();
                     setState(() {
                       _globalMessages = b.docs.map((doc) {
-                        return GlobalMessagingModel(
-                            text: doc.get("msg"), uid: doc.id);
+                        return GlobalMessagingModel(tittle: doc.id,
+                            text: doc.get("text"), uid: doc.id);
                       }).toList();
 
                       _reminderVisibility = !_reminderVisibility;
@@ -215,7 +239,36 @@ class _GlobalMessageState extends State<GlobalMessage> {
                   patientUid: widget.patientUid,
                 ),
               )
-            : Container(),
+            : Center(
+                child: SizedBox(
+                  width: (MediaQuery.of(context).size.width / 3) - 90,
+                  child: Card(
+                    color: darkCard,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.info,color: Colors.white,),
+                              Text(
+                                "Choose type and click on visibility ",
+                                style: whitePopLarge(Colors.white),
+                                maxLines: 3,
+                              ),
+                            ],
+                          ),
+                          Text(
+                            "icon to show current messages",
+                            style: whitePopLarge(Colors.white),
+                            maxLines: 3,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
       ],
     );
   }

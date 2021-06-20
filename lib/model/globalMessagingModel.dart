@@ -1,5 +1,6 @@
 class GlobalMessagingModel{
   final String uid;
   final String text;
-  GlobalMessagingModel({required this.uid, required this.text});
+  final String tittle;
+  GlobalMessagingModel({required this.uid, required this.text,required this.tittle});
 }
