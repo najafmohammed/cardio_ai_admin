@@ -13,19 +13,23 @@ class GlobalMessage extends StatefulWidget {
 }
 
 TextEditingController _controller = new TextEditingController();
+TextEditingController _controllerTittle = new TextEditingController();
+
 String msg = "";
+String title = "";
 String hint = "";
+String tittleHint = "";
 bool visible = false;
 String suffixText = "";
 Color _textColorIndicator = Colors.grey;
-bool _reminderVisibility = false;
+Color _textColorIndicatorTittle = Colors.grey;
 
 List<GlobalMessagingModel> _globalMessages = [];
 
 CollectionReference globalMessageCollection =
     FirebaseFirestore.instance.collection('Global');
 
-bool news = false;
+bool news = true;
 bool tips = false;
 bool test = false;
 int newsCount = 0;
@@ -33,18 +37,67 @@ int tipsCount = 0;
 int testCount = 0;
 
 class _GlobalMessageState extends State<GlobalMessage> {
+  void updateMessageDisplayed() async {
+    QuerySnapshot b;
+    if (test) {
+      b = await globalMessageCollection
+          .doc("Messaging")
+          .collection("Test")
+          .get();
+      _update(b);
+    } else if (tips) {
+      b = await globalMessageCollection
+          .doc("Messaging")
+          .collection("Tips")
+          .get();
+      _update(b);
+    } else if (news) {
+      b = await globalMessageCollection
+          .doc("Messaging")
+          .collection("News")
+          .get();
+      _update(b);
+    }
+  }
+
+  void _update(QuerySnapshot b) {
+    setState(() {
+      _globalMessages = b.docs.map((doc) {
+        return GlobalMessagingModel(
+            tittle: doc.id, text: doc.get("text"), uid: doc.id);
+      }).toList();
+    });
+  }
+
   void GetData() async {
+    await globalMessageCollection
+        .doc("Messaging")
+        .collection("News")
+        .get()
+        .then((value) {
+      setState(() {
+        newsCount = value.docs.length;
+      });
+    });
     await globalMessageCollection
         .doc("Messaging")
         .collection("Test")
         .get()
         .then((value) {
-          print("hello");
-print(value.size);
       setState(() {
-        newsCount = value.docs.length;
+        testCount = value.docs.length;
       });
     });
+    await globalMessageCollection
+        .doc("Messaging")
+        .collection("Tips")
+        .get()
+        .then((value) {
+      setState(() {
+        tipsCount = value.docs.length;
+      });
+    });
+    updateMessageDisplayed();
   }
 
   initState() {
@@ -89,6 +142,7 @@ print(value.size);
                     tips = false;
                     test = false;
                   });
+                  updateMessageDisplayed();
                 }),
             ActionChip(
                 avatar: CircleAvatar(
@@ -108,6 +162,7 @@ print(value.size);
                     tips = true;
                     test = false;
                   });
+                  updateMessageDisplayed();
                 }),
             ActionChip(
                 avatar: CircleAvatar(
@@ -127,8 +182,62 @@ print(value.size);
                     tips = false;
                     test = true;
                   });
+                  updateMessageDisplayed();
                 }),
           ],
+        ),
+        Card(
+          color: darkCard,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              new Container(
+                height: 75,
+                width: 340,
+                child: new TextFormField(
+                  controller: _controllerTittle,
+                  onChanged: (val) {
+                    setState(() => title = val);
+                  },
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: "Poppins",
+                    fontWeight: FontWeight.w500,
+                  ),
+                  decoration: new InputDecoration(
+                    suffixText: suffixText,
+                    suffixIcon: AnimatedOpacity(
+                      opacity: visible ? 1.0 : 0.0,
+                      duration: Duration(milliseconds: 1000),
+                      // The green box must be a child of the AnimatedOpacity widget.
+                      child: Icon(
+                        (title == "") ? Icons.circle : Icons.check_circle,
+                        color: (title == "")
+                            ? Colors.red
+                            : _textColorIndicatorTittle,
+                      ),
+                    ),
+                    hintText: (tittleHint == "")
+                        ? (news)
+                            ? 'Enter tittle for News'
+                            : (tips)
+                                ? 'Enter tittle for Tips'
+                                : 'Enter tittle for Tests'
+                        : tittleHint,
+                    hintStyle: TextStyle(
+                        color: (tittleHint == "") ? Colors.grey : Colors.red),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                    labelText: 'Tittle',
+                    labelStyle:
+                        new TextStyle(color: Colors.white, fontSize: 17),
+                  ),
+                  cursorColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
         Card(
           color: darkCard,
@@ -159,8 +268,13 @@ print(value.size);
                         color: (msg == "") ? Colors.red : _textColorIndicator,
                       ),
                     ),
-                    hintText:
-                        (hint == "") ? 'Enter message for Reminder' : hint,
+                    hintText: (hint == "")
+                        ? (news)
+                            ? 'Enter message for News'
+                            : (tips)
+                                ? 'Enter message for Tips'
+                                : 'Enter message for Tests'
+                        : hint,
                     hintStyle: TextStyle(
                         color: (hint == "") ? Colors.grey : Colors.red),
                     focusedBorder: UnderlineInputBorder(
@@ -173,102 +287,63 @@ print(value.size);
                   cursorColor: Colors.white,
                 ),
               ),
-              ElevatedButton.icon(
-                onPressed: () async {
-                  setState(() {});
-                  if (msg == "") {
-                    setState(() {
-                      hint = "Write something ";
-                      _textColorIndicator = Colors.red;
-                    });
-                  } else {
-                    visible = !visible;
-                    setState(() {
-                      suffixText = "message sent";
-                    });
-                    print("sending msg:" + msg);
-                    _textColorIndicator = Colors.green;
-                    final CollectionReference record =
-                        FirebaseFirestore.instance.collection('Patient Record');
-                    await record.doc().collection("Reminders").add({
-                      "msg": msg,
-                    }).then((value) {
-                      setState(() {
-                        visible = !visible;
-                        msg = "";
-                        suffixText = "";
-                        _controller.clear();
-                      });
-                    });
-                  }
-                },
-                icon: Icon(Icons.arrow_forward_ios),
-                label: Text(
-                  "",
-                  style: whitePopSmall,
-                ),
-              ),
-              ElevatedButton.icon(
-                  onPressed: () async {
-                    var b = await globalMessageCollection
-                        .doc("Messaging")
-                        .collection("Test")
-                        .get();
-                    setState(() {
-                      _globalMessages = b.docs.map((doc) {
-                        return GlobalMessagingModel(tittle: doc.id,
-                            text: doc.get("text"), uid: doc.id);
-                      }).toList();
-
-                      _reminderVisibility = !_reminderVisibility;
-                    });
-                  },
-                  icon: (_reminderVisibility)
-                      ? Icon(Icons.visibility)
-                      : Icon(Icons.visibility_off),
-                  label: Text("")),
             ],
           ),
         ),
-        (_reminderVisibility)
-            ? SizedBox(
-                width: (MediaQuery.of(context).size.width / 3) - 90,
-                height: (MediaQuery.of(context).size.height / 1.65),
-                child: GlobalMessagingList(
-                  messages: _globalMessages,
-                  patientUid: widget.patientUid,
-                ),
-              )
-            : Center(
-                child: SizedBox(
-                  width: (MediaQuery.of(context).size.width / 3) - 90,
-                  child: Card(
-                    color: darkCard,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Icon(Icons.info,color: Colors.white,),
-                              Text(
-                                "Choose type and click on visibility ",
-                                style: whitePopLarge(Colors.white),
-                                maxLines: 3,
-                              ),
-                            ],
-                          ),
-                          Text(
-                            "icon to show current messages",
-                            style: whitePopLarge(Colors.white),
-                            maxLines: 3,
-                          ),
-                        ],
-                      ),
-                    ),
+        Center(
+          child: Card(
+            color: darkCard,
+            child: Row(
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    setState(() {});
+                    if (msg == "" || title == "") {
+                      setState(() {
+                        hint = "Write something ";
+                        tittleHint = "Write something ";
+                        _textColorIndicator = Colors.red;
+                      });
+                    } else {
+                      visible = !visible;
+                      setState(() {
+                        suffixText = "message sent";
+                      });
+                      _textColorIndicator = Colors.green;
+                      globalMessageCollection.doc();
+                      final CollectionReference record = FirebaseFirestore
+                          .instance
+                          .collection('Patient Record');
+                      await record.doc().collection("Reminders").add({
+                        "msg": msg,
+                      }).then((value) {
+                        setState(() {
+                          visible = !visible;
+                          msg = "";
+                          suffixText = "";
+                          _controller.clear();
+                        });
+                      });
+                    }
+                  },
+                  icon: Icon(Icons.arrow_forward_ios),
+                  label: Text(
+                    "Submit",
+                    style: whitePopSmall,
                   ),
                 ),
-              ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(
+          width: (MediaQuery.of(context).size.width / 3) - 90,
+          height: (MediaQuery.of(context).size.height / 1.8),
+          child: GlobalMessagingList(
+            messages: _globalMessages,
+            patientUid: widget.patientUid,
+          ),
+        )
       ],
     );
   }
