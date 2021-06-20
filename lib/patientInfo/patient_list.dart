@@ -278,48 +278,56 @@ class _PatientInfoListState extends State<PatientInfoList> {
                   ],
                 ),
               ),
-              (!_reminderVisibility)
-                  ? SizedBox(
-                      width: (MediaQuery.of(context).size.width / 3) - 90,
-                      height: (MediaQuery.of(context).size.height / 1.65),
-                      child: StaggeredGridView.countBuilder(
-                        crossAxisCount: 6,
-                        itemCount: gridData.length,
-                        itemBuilder: (BuildContext context, int index) => Card(
-                          color: Colors.purple.shade400,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: new Text(
-                                  gridData[index].title.toString(),
-                                  style: whitePopSmall,
-                                ),
-                              ),
-                              Divider(
-                                color: Colors.purple.shade400,
-                              ),
-                              new Text(
-                                gridData[index].value.toString(),
-                                style: whitePopSmall.copyWith(
-                                    color: Colors.white70),
-                              ),
-                            ],
+              AnimatedCrossFade(
+                crossFadeState: !_reminderVisibility
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+                duration: Duration(seconds: 1),
+                firstCurve: Curves.easeOutBack,
+                secondCurve: Curves.easeInBack,
+                secondChild: SizedBox(
+                    width: (MediaQuery.of(context).size.width / 3) - 90,
+                    height: (MediaQuery.of(context).size.height / 1.65),
+                    child: ReminderList(
+                      patientUid: data.uid,
+                      reminders: reminderData,
+                    )),
+                firstChild: SizedBox(
+                  width: (MediaQuery.of(context).size.width / 3) - 90,
+                  height: (MediaQuery.of(context).size.height / 1.65),
+                  child: StaggeredGridView.countBuilder(
+                    crossAxisCount: 6,
+                    itemCount: gridData.length,
+                    itemBuilder: (BuildContext context, int index) => Card(
+                      color: Colors.purple.shade400,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: new Text(
+                              gridData[index].title.toString(),
+                              style: whitePopSmall,
+                            ),
                           ),
-                        ),
-                        staggeredTileBuilder: (int index) =>
-                            new StaggeredTile.count(gridData[index].column,
-                                gridData[index].row.toDouble()),
-                        mainAxisSpacing: 4.0,
-                        crossAxisSpacing: 4.0,
+                          Divider(
+                            color: Colors.purple.shade400,
+                          ),
+                          new Text(
+                            gridData[index].value.toString(),
+                            style:
+                                whitePopSmall.copyWith(color: Colors.white70),
+                          ),
+                        ],
                       ),
-                    )
-                  : SizedBox(
-                      width: (MediaQuery.of(context).size.width / 3) - 90,
-                      height: (MediaQuery.of(context).size.height / 1.65),
-                      child: ReminderList(patientUid: data.uid,
-                        reminders: reminderData,
-                      ))
+                    ),
+                    staggeredTileBuilder: (int index) =>
+                        new StaggeredTile.count(gridData[index].column,
+                            gridData[index].row.toDouble()),
+                    mainAxisSpacing: 4.0,
+                    crossAxisSpacing: 4.0,
+                  ),
+                ),
+              ),
             ],
           ),
         ));
