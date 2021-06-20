@@ -36,22 +36,26 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
-int index=0;
+
+int index = 0;
+
 class _MyHomePageState extends State<MyHomePage> {
-  void getData() async{
+  void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int _index = (prefs.getInt('index') ?? 0);
     setState(() {
-      index=_index;
+      index = _index;
     });
   }
-   initState() {
-     getData();
+
+  initState() {
+    getData();
+
     // TODO: implement initState
     super.initState();
-
   }
-  bool _globalMessage=false;
+
+  bool _globalMessage = false;
   @override
   Widget build(BuildContext context) {
     getData();
@@ -63,12 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
           ElevatedButton.icon(
             onPressed: () {
               setState(() {
-              _globalMessage=!_globalMessage;
+                _globalMessage = !_globalMessage;
               });
             },
             icon: Icon(Icons.autorenew),
             label: Text(
-              (_globalMessage)?"Global message":"User message",
+              (_globalMessage) ? "Global message" : "User message",
               style: whitePopSmall,
             ),
           ),
@@ -91,14 +95,38 @@ class _MyHomePageState extends State<MyHomePage> {
                 PatientList()
               ],
             ),
-            Column(
-              children: [
-                StreamProvider<List<PatientDataModel>>.value(
-                    value: getpatientFeedPrediction,
-                    initialData: [PatientDataModel("null",1,2,"VznTJKBUPsfS2G3gBVIfskmcea02",[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0])],
-                    child: PatientInfoList(index)),
-              ],
-            ),
+            StreamProvider<List<PatientDataModel>>.value(
+                value: getpatientFeedPrediction,
+                initialData: [
+                  PatientDataModel(
+                      "null", 1, 2, "VznTJKBUPsfS2G3gBVIfskmcea02", [
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0
+                  ])
+                ],
+                child: PatientInfoList(index,_globalMessage)),
             Column(
               children: [
                 Padding(

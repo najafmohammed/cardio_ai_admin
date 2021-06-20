@@ -1,3 +1,4 @@
+import 'package:cardio_ai_admin/global%20messaging/global_message.dart';
 import 'package:cardio_ai_admin/main.dart';
 import 'package:cardio_ai_admin/model/infoGrid.dart';
 import 'package:cardio_ai_admin/model/patient_data_model.dart';
@@ -11,8 +12,9 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
 class PatientInfoList extends StatefulWidget {
-  PatientInfoList(int index);
+  PatientInfoList(int index, this._globalMessage);
 
+ final bool _globalMessage;
   @override
   _PatientInfoListState createState() => _PatientInfoListState();
 }
@@ -120,7 +122,15 @@ class _PatientInfoListState extends State<PatientInfoList> {
       ),
     ];
 
-    return Card(
+    return AnimatedCrossFade(
+        crossFadeState: !widget._globalMessage
+        ? CrossFadeState.showFirst
+            : CrossFadeState.showSecond,
+        duration: Duration(seconds: 1),
+    firstCurve: Curves.easeOutBack,
+    secondCurve: Curves.easeInBack,
+    firstChild:
+    Card(
         color: darkCard,
         child: SizedBox(
           width: (MediaQuery.of(context).size.width / 3) - 30,
@@ -330,6 +340,8 @@ class _PatientInfoListState extends State<PatientInfoList> {
               ),
             ],
           ),
-        ));
+        ))
+    ,secondChild: GlobalMessage(patientUid: data.uid)
+    );
   }
 }
