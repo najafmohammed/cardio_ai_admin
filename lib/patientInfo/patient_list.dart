@@ -26,11 +26,10 @@ class _PatientInfoListState extends State<PatientInfoList> {
   bool _reminderVisibility = false;
   TextEditingController _controller = new TextEditingController();
 
-  List<reminderModel> reminderData=[];
+  List<reminderModel> reminderData = [];
 
   CollectionReference recordPredictionReminder =
-  FirebaseFirestore.instance.collection('Patient Record');
-
+      FirebaseFirestore.instance.collection('Patient Record');
 
   @override
   Widget build(BuildContext context) {
@@ -258,14 +257,15 @@ class _PatientInfoListState extends State<PatientInfoList> {
                       ),
                     ),
                     ElevatedButton.icon(
-                        onPressed: () async{
-                            var b=await recordPredictionReminder
-                                .doc(data.uid)
-                                .collection("Reminders")
-                                .get();
-                            setState((){
-                            reminderData=b.docs.map((doc){
-                              return reminderModel(text: doc.get("msg"), uid: doc.id);
+                        onPressed: () async {
+                          var b = await recordPredictionReminder
+                              .doc(data.uid)
+                              .collection("Reminders")
+                              .get();
+                          setState(() {
+                            reminderData = b.docs.map((doc) {
+                              return reminderModel(
+                                  text: doc.get("msg"), uid: doc.id);
                             }).toList();
 
                             _reminderVisibility = !_reminderVisibility;
@@ -317,8 +317,9 @@ class _PatientInfoListState extends State<PatientInfoList> {
                   : SizedBox(
                       width: (MediaQuery.of(context).size.width / 3) - 90,
                       height: (MediaQuery.of(context).size.height / 1.65),
-                      child: ReminderList(reminders: reminderData,)
-                    )
+                      child: ReminderList(patientUid: data.uid,
+                        reminders: reminderData,
+                      ))
             ],
           ),
         ));
