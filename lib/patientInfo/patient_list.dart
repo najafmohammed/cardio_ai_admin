@@ -37,10 +37,18 @@ class _PatientInfoListState extends State<PatientInfoList> {
   Widget build(BuildContext context) {
     final PatientRecord = Provider.of<List<PatientDataModel>>(context);
     PatientDataModel data = PatientRecord[index];
-    PatientRecord.forEach((element) {
-      // print(element.name);
-    });
-
+    void updateList() async{
+      var b = await recordPredictionReminder
+          .doc(data.uid)
+          .collection("Reminders")
+          .get();
+      setState(() {
+        reminderData = b.docs.map((doc) {
+          return reminderModel(
+              text: doc.get("msg"), uid: doc.id);
+        }).toList();
+      });
+    }
     List<InfoGrid> gridData = [
       InfoGrid(
         row: 1.2,
@@ -257,6 +265,7 @@ class _PatientInfoListState extends State<PatientInfoList> {
                               suffixText = "";
                               _controller.clear();
                             });
+                            updateList();
                           });
                         }
                       },
@@ -268,17 +277,9 @@ class _PatientInfoListState extends State<PatientInfoList> {
                     ),
                     ElevatedButton.icon(
                         onPressed: () async {
-                          var b = await recordPredictionReminder
-                              .doc(data.uid)
-                              .collection("Reminders")
-                              .get();
+                          updateList();
                           setState(() {
-                            reminderData = b.docs.map((doc) {
-                              return reminderModel(
-                                  text: doc.get("msg"), uid: doc.id);
-                            }).toList();
-
-                            _reminderVisibility = !_reminderVisibility;
+                          _reminderVisibility=!_reminderVisibility;
                           });
                         },
                         icon: (_reminderVisibility)
