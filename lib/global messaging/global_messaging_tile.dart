@@ -7,7 +7,10 @@ class GlobalMessagingTile extends StatefulWidget {
   final VoidCallback deleteItem;
   final String patientUid;
   final GlobalMessagingModel input;
-  GlobalMessagingTile( {required this.deleteItem, required this.patientUid,required this.input});
+  final bool news;
+  final bool tips;
+  final bool test;
+  GlobalMessagingTile( {required this.deleteItem, required this.patientUid,required this.input, required this.news, required this.tips, required this.test});
 
   @override
   _GlobalMessagingTileState createState() => _GlobalMessagingTileState();
@@ -34,10 +37,24 @@ class _GlobalMessagingTileState extends State<GlobalMessagingTile> {
           leading: Icon(Icons.circle),
           trailing: InkWell(
               onTap: ()async{
-                await globalMessageCollection
-                    .doc("Messaging")
-                    .collection("Test").doc(widget.input.uid).delete();
-                widget.deleteItem();
+                if (widget.tips) {
+                  await globalMessageCollection
+                      .doc("Messaging")
+                      .collection("Tips").doc(widget.input.uid).delete().then((
+                      value) => widget.deleteItem());
+                }
+                else if(widget.test){
+                  await globalMessageCollection
+                      .doc("Messaging")
+                      .collection("Test").doc(widget.input.uid).delete().then((
+                      value) => widget.deleteItem());
+                }
+                else if(widget.news){
+                  await globalMessageCollection
+                      .doc("Messaging")
+                      .collection("News").doc(widget.input.uid).delete().then((
+                      value) => widget.deleteItem());
+                }
               },
               child: Icon(Icons.delete,color: Colors.red,)),
         ),

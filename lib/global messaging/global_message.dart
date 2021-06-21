@@ -16,7 +16,7 @@ TextEditingController _controller = new TextEditingController();
 TextEditingController _controllerTittle = new TextEditingController();
 
 String msg = "";
-String title = "";
+String tittle = "";
 String hint = "";
 String tittleHint = "";
 bool visible = false;
@@ -197,7 +197,7 @@ class _GlobalMessageState extends State<GlobalMessage> {
                 child: new TextFormField(
                   controller: _controllerTittle,
                   onChanged: (val) {
-                    setState(() => title = val);
+                    setState(() => tittle = val);
                   },
                   style: TextStyle(
                     color: Colors.white,
@@ -211,8 +211,8 @@ class _GlobalMessageState extends State<GlobalMessage> {
                       duration: Duration(milliseconds: 1000),
                       // The green box must be a child of the AnimatedOpacity widget.
                       child: Icon(
-                        (title == "") ? Icons.circle : Icons.check_circle,
-                        color: (title == "")
+                        (tittle == "") ? Icons.circle : Icons.check_circle,
+                        color: (tittle == "")
                             ? Colors.red
                             : _textColorIndicatorTittle,
                       ),
@@ -298,7 +298,7 @@ class _GlobalMessageState extends State<GlobalMessage> {
                 ElevatedButton.icon(
                   onPressed: () async {
                     setState(() {});
-                    if (msg == "" || title == "") {
+                    if (msg == "" || tittle == "") {
                       setState(() {
                         hint = "Write something ";
                         tittleHint = "Write something ";
@@ -311,19 +311,50 @@ class _GlobalMessageState extends State<GlobalMessage> {
                       });
                       _textColorIndicator = Colors.green;
                       globalMessageCollection.doc();
-                      final CollectionReference record = FirebaseFirestore
-                          .instance
-                          .collection('Patient Record');
-                      await record.doc().collection("Reminders").add({
-                        "msg": msg,
-                      }).then((value) {
-                        setState(() {
-                          visible = !visible;
-                          msg = "";
-                          suffixText = "";
-                          _controller.clear();
+                      final CollectionReference record =
+                          FirebaseFirestore.instance.collection('Global');
+                      if (test)
+                        await record.doc("Messaging").collection("Test").doc(tittle).set({
+                          "text": msg,
+                        }).then((value) {
+                          setState(() {
+                            visible = !visible;
+                            msg = "";
+                            tittle = "";
+                            suffixText = "";
+                            _controller.clear();
+                            _controllerTittle.clear();
+                          });
+                          GetData();
                         });
-                      });
+                      if (tips)
+                        await record.doc("Messaging").collection("Tips").doc(tittle).set({
+                          "text": msg,
+                        }).then((value) {
+                          setState(() {
+                            visible = !visible;
+                            msg = "";
+                            tittle = "";
+                            suffixText = "";
+                            _controller.clear();
+                            _controllerTittle.clear();
+                          });
+                          GetData();
+                        });
+                      if (news)
+                        await record.doc("Messaging").collection("News").doc(tittle).set({
+                          "text": msg,
+                        }).then((value) {
+                          setState(() {
+                            visible = !visible;
+                            msg = "";
+                            tittle = "";
+                            suffixText = "";
+                            _controller.clear();
+                            _controllerTittle.clear();
+                          });
+                          GetData();
+                        });
                     }
                   },
                   icon: Icon(Icons.arrow_forward_ios),
@@ -340,6 +371,12 @@ class _GlobalMessageState extends State<GlobalMessage> {
           width: (MediaQuery.of(context).size.width / 3) - 90,
           height: (MediaQuery.of(context).size.height / 1.8),
           child: GlobalMessagingList(
+            updateCount: (){
+              GetData();
+            },
+            news: news,
+            tips: tips,
+            test: test,
             messages: _globalMessages,
             patientUid: widget.patientUid,
           ),

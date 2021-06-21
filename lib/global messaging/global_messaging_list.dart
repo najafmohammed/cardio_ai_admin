@@ -5,8 +5,12 @@ import 'package:flutter/material.dart';
 class GlobalMessagingList extends StatefulWidget {
   final List<GlobalMessagingModel> messages;
   final String patientUid;
+  final bool news;
+  final bool tips;
+  final bool test;
+  final VoidCallback updateCount;
   GlobalMessagingList(
-      {Key? key, required this.messages, required this.patientUid})
+      {Key? key, required this.messages, required this.patientUid, required this.news, required this.tips, required this.test, required this.updateCount})
       : super(key: key);
 
   @override
@@ -22,9 +26,13 @@ class _GlobalMessagingListState extends State<GlobalMessagingList> {
         primary: false,
         itemBuilder: (context, index) {
           return GlobalMessagingTile(
+            news: widget.news,
+            tips: widget.tips,
+            test: widget.test,
             patientUid: widget.patientUid,
             input: widget.messages[index],
             deleteItem: () {
+              widget.updateCount();
               widget.messages.removeAt(index);
             },
           );
