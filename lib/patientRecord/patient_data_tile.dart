@@ -25,7 +25,8 @@ class _PatientTileState extends State<PatientTile> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        updateUser(widget.masterIndex);
+        updateUser(widget.model.opNumber);
+        print("value :"+widget.masterIndex.toString());
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),

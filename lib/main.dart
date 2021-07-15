@@ -37,13 +37,14 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-int index = 0;
+int index = 10011;
 
 class _MyHomePageState extends State<MyHomePage> {
   void getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int _index = (prefs.getInt('index') ?? 0);
     setState(() {
+
       index = _index;
     });
   }

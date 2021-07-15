@@ -36,7 +36,7 @@ class _PatientInfoListState extends State<PatientInfoList> {
   @override
   Widget build(BuildContext context) {
     final PatientRecord = Provider.of<List<PatientDataModel>>(context);
-    PatientDataModel data = PatientRecord[index];
+    PatientDataModel data =  PatientRecord.where((element) => element.opNumber==index).first;
     void updateList() async{
       var b = await recordPredictionReminder
           .doc(data.uid)
