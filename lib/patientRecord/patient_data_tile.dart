@@ -66,7 +66,7 @@ class _PatientTileState extends State<PatientTile> {
               padding: const EdgeInsets.all(8.0),
               child: (widget.model.prediction != 0)
                   ? Text(
-                    (widget.model.prediction * 100).toString() + " %",
+                    (widget.model.prediction * 100).toStringAsFixed(2) + " %",
                     style:
                         whitePopLarge((widget.model.prediction <= .40)
                             ? Colors.green
